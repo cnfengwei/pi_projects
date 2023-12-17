@@ -1,0 +1,5 @@
+-- database: /home/fengwei/文档/pythonapp/pyenv/pienv/记录温度/temp_ds.db
+
+-- 要运行整个文件，请按窗口右上角的▷按钮。
+
+SELECT * FROM temp_list WHERE date >= '2023-12-15 00:00:00' AND date < '2023-12-16 00:00:00'
