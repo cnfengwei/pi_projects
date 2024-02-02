@@ -1,5 +1,4 @@
 from pymodbus.client import ModbusSerialClient
-from pymodbus.transaction import ModbusRtuFramer 
 from pymodbus import Framer
 baud_rate = 9600
 serial_port = 'COM7'

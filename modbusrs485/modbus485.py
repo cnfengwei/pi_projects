@@ -11,8 +11,7 @@ FORMAT = ('%(asctime)-15s %(threadName)-15s '
 logging.basicConfig(format=FORMAT)
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-from pymodbus.client import ModbusSerialClient
-from pymodbus.transaction import ModbusRtuFramer 
+from pymodbus.client import ModbusSerialClient 
 # 设置串口参数，根据实际情况修改
 #serial_port = '/dev/ttyUSB0'
 baud_rate = 9600
@@ -40,7 +39,8 @@ if client.connect():
 #（0,8，1）从第1个通道开始读取数值，读取8个寄存器的数值【20,21,22,23,24,25,26,27】
 #（7,1,1）从第8通道开始读取，只读取一个数值【27】
 rr = client.read_holding_registers(0,1,1)
-#rr= client.read_input_registers(0,1,11)
+
+#rr= client.read_input_registers(0,1,1)
        
 
 # # 发送 Modbus RTU 读取指令rr.bits为读取线圈，rr.registers为读取寄存器指令
