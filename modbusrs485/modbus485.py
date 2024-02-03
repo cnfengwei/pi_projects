@@ -4,7 +4,7 @@
 
 
 from pymodbus import Framer
-from pymodbus.client import ModbusSerialClient
+from pymodbus.client.sync import ModbusSerialClient
 import logging
 FORMAT = ('%(asctime)-15s %(threadName)-15s '
           '%(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
@@ -19,14 +19,13 @@ serial_port = 'COM7'
 
 # 创建 Modbus RTU 串口客户端
 client = ModbusSerialClient(
-    
-    framer = Framer.RTU,
+    method='rtu',
     port=serial_port,
     baudrate=baud_rate,
     stopbits=1,
     bytesize=8,
     parity='N',  # 无校验
-    timeout=1
+    timeout=2
 )
 #method='rtu',
 # 尝试连接到 Modbus RTU 设备
@@ -38,7 +37,7 @@ if client.connect():
 #第一个参数为读取第几个通道的数值，第二个参数为读取几个数值，第三个参数为从站地址
 #（0,8，1）从第1个通道开始读取数值，读取8个寄存器的数值【20,21,22,23,24,25,26,27】
 #（7,1,1）从第8通道开始读取，只读取一个数值【27】
-rr = client.read_holding_registers(0,1,1)
+rr = client.read_holding_registers(0,1,8)
 
 #rr= client.read_input_registers(0,1,1)
        
