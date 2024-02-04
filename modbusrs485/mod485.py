@@ -1,55 +1,31 @@
 from pymodbus.client import ModbusSerialClient
-import logging
-FORMAT = ('%(asctime)-15s %(threadName)-15s '
-          '%(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
-logging.basicConfig(format=FORMAT)
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
-
-from pymodbus.client import AsyncModbusSerialClient
-from pymodbus.constants import Endian
-from pymodbus.payload import BinaryPayloadDecoder
-
+import time
 # 串口参数
 serial_port = 'COM7'
-baud_rate = 1200
-  # 'E' 为偶校验，'O' 为奇校验，'N' 为无校验
-stop_bits = 1
-data_bits = 8
-
-# 从机地址
-unit_id = 8
 
 # 创建 Modbus RTU 串口客户端
-client = AsyncModbusSerialClient(
-    method='rtu',
-    port=serial_port,
-    baudrate=baud_rate,
-    stopbits=stop_bits,
-    bytesize=data_bits,
-    parity='O',
-    timeout=1
-)
-
-# 打开串口连接
+client = ModbusSerialClient(port=serial_port,baudrate= 9600,timeout=0.5)
 client.connect()
+i=0
+# 循环读取温度值
+while True:
+    # 读取温度寄存器值
+    temperature_register = client.read_holding_registers(0, 8, 1)
 
-# 设置读数据命令的起始寄存器地址
-start_register_address = 0xAB
+    # 判断读取是否成功
+    if temperature_register.registers:
+        # 遍历读取到的寄存器值
+        for value in temperature_register.registers:
+            # 将读取到的值转换为温度值
+            temperature = value / 10
+            i=i+1
+            
+            # 打印温度值
+            print(str(i)+f'    温度：{temperature}℃')
+    else:
+        print('读取温度值失败')
 
-# 读取寄存器数据
-register_address = start_register_address
-data_count = 10
-request = client.read_holding_registers(171, data_count, unit=unit_id)
-response = client.execute(request)
-
-# 处理响应
-if response.isError():
-    print(f"Modbus error: {response.message}")
-else:
-    decoder = BinaryPayloadDecoder.fromRegisters(response.registers, endian=Endian.Big)
-    decoded_data = decoder.decode_32bit_float()  # 32位浮点数解码，根据实际情况调整
-    print(f"Received data: {decoded_data}")
-
+    # 延时 5 秒
+    time.sleep(5)
 # 关闭串口连接
 client.close()
