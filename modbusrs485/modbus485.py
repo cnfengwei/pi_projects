@@ -15,8 +15,8 @@ from pymodbus.client import ModbusSerialClient
 # 设置串口参数，根据实际情况修改
 #serial_port = '/dev/ttyUSB0'
 baud_rate = 9600
-serial_port = 'COM7'
-
+#serial_port = 'COM7'
+serial_port = '/dev/ttyUSB0'
 # 创建 Modbus RTU 串口客户端
 client = ModbusSerialClient(
     port=serial_port,
@@ -25,8 +25,8 @@ client = ModbusSerialClient(
 )
 #method='rtu',
 # 尝试连接到 Modbus RTU 设备
-if client.connect():
-    print('ok')
+client.connect()
+  
 
 
 
@@ -65,21 +65,24 @@ if client.connect():
 #client.write_register(30,8,1)
 # client.close()
 
-# if rr.registers:
-#     print('读取成功')
-#     # 遍历读取到的寄存器值
-#     for value in rr.registers:
-#         print(value)
-# else:
-#     print('读取失败')
+temperature_register = client.read_holding_registers(0, 8, 1)
+temperature = temperature_register.registers
+i = 0
 
-# 关闭连接
+# 判断读取是否成功
+if temperature_register.registers:
+    # 遍历读取到的寄存器值
+    for value in temperature_register.registers:
+        # 将读取到的值转换为温度值
+        if value > 32767:
+            value = value - 65536  # 进行符号位扩展
+        temperature = value / 10
+        i += 1
+
+        # 打印温度值
+        print(str(i) + f'    温度：{temperature}℃')
+else:
+    print('读取温度值失败')
+
+# 关闭串口连接
 client.close()
-
-# 每隔 0.5 秒读取一次温度值
-
-    # 读取温度寄存器值
-temperature_register = client.read_holding_registers(2,2,1)
-    
-    # 判断读取是否成功
-print(temperature_register.registers)
