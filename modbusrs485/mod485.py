@@ -8,24 +8,23 @@ client = ModbusSerialClient(port=serial_port,baudrate= 9600,timeout=0.5)
 client.connect()
 i=0
 # 循环读取温度值
-while True:
-    # 读取温度寄存器值
-    temperature_register = client.read_holding_registers(0, 8, 1)
 
-    # 判断读取是否成功
-    if temperature_register.registers:
-        # 遍历读取到的寄存器值
-        for value in temperature_register.registers:
-            # 将读取到的值转换为温度值
-            temperature = value / 10
-            i=i+1
-            
-            # 打印温度值
-            print(str(i)+f'    温度：{temperature}℃')
-    else:
-        print('读取温度值失败')
+# 读取温度寄存器值
+temperature_register = client.read_holding_registers(0, 8, 1)
+print(temperature_register)
+# 判断读取是否成功
+if temperature_register.registers:
+    # 遍历读取到的寄存器值
+    for value in temperature_register.registers:
+        # 将读取到的值转换为温度值
+        temperature = value / 10
+        i=i+1
+        
+        # 打印温度值
+        print(str(i)+f'    温度：{temperature}℃')
+else:
+    print('读取温度值失败')
 
-    # 延时 5 秒
-    time.sleep(5)
+
 # 关闭串口连接
 client.close()

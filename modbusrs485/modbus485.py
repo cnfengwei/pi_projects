@@ -77,19 +77,9 @@ if client.connect():
 client.close()
 
 # 每隔 0.5 秒读取一次温度值
-while True:
+
     # 读取温度寄存器值
-    temperature_register = client.read_holding_registers(0, 8, 1)
+temperature_register = client.read_holding_registers(2,2,1)
     
     # 判断读取是否成功
-    if temperature_register.registers:
-        # 将读取到的值转换为温度值
-        temperature = temperature_register.registers[0] / 10
-
-        # 打印温度值
-        print(f'温度：{temperature}℃')
-    else:
-        print('读取温度值失败')
-
-    # 延时 0.5 秒
-    time.sleep(0.5)
+print(temperature_register.registers)
